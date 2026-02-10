@@ -98,20 +98,47 @@ The Docker image works with any container hosting platform:
 
 Ensure the container has a persistent volume mounted at `/data` for the SQLite database, and that port 3000 is exposed.
 
-### Serverless / edge deployment
+### Self-hosting with Cloudflare Tunnel (recommended)
 
-If you want to run this without managing servers, there are a few options:
+The simplest production setup is running Docker on your own server and exposing it via a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/). This gives you HTTPS, DDoS protection, and a custom domain without opening any ports.
 
-- **Fly.io** (recommended for this project) — Supports Docker natively, provides persistent volumes for SQLite, and has a generous free tier. Just run `fly launch` in the project root.
-- **Railway** — Docker-based deployment with persistent storage. Connect your repo and deploy.
-- **Render** — Free tier with Docker support and persistent disks.
+1. Install `cloudflared` on your server:
+   ```bash
+   # Debian/Ubuntu
+   curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+   echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
+   sudo apt-get update && sudo apt-get install cloudflared
+   ```
 
-**Cloudflare Workers / WASM considerations:** Cloudflare Workers support Rust compiled to WebAssembly via the [`workers-rs`](https://github.com/cloudflare/workers-rs) crate. However, this project depends on **ffprobe** (a native binary from FFmpeg) for media duration extraction, which cannot run in a WASM sandbox. To use Workers, you would need to either:
+2. Authenticate and create a tunnel:
+   ```bash
+   cloudflared tunnel login
+   cloudflared tunnel create duration-api
+   ```
 
-1. Replace ffprobe with a pure-Rust media parser (e.g., `mp4parse`, `symphonia`) that compiles to WASM
-2. Use a split architecture where the Worker handles requests and delegates media processing to an external service
+3. Start the API with Docker Compose:
+   ```bash
+   docker compose up -d
+   ```
 
-For a purely serverless approach without ffprobe, consider **AWS Lambda with a container image** (which supports ffmpeg in the container) or **Google Cloud Run** (also container-based and scales to zero).
+4. Route traffic through the tunnel:
+   ```bash
+   cloudflared tunnel route dns duration-api api.yourdomain.com
+   cloudflared tunnel --url http://localhost:3000 run duration-api
+   ```
+
+5. (Optional) Run `cloudflared` as a systemd service for auto-restart:
+   ```bash
+   sudo cloudflared service install
+   ```
+
+That's it — your API is live at `https://api.yourdomain.com` with no ports exposed, automatic HTTPS, and Cloudflare's network in front.
+
+### Other hosting options
+
+- **Google Cloud Run** — Container-based, scales to zero, good free tier. Works well since the Docker image includes ffmpeg.
+- **Fly.io** — Docker-native with persistent volumes for SQLite. Run `fly launch` in the project root.
+- **Railway / Render** — Connect your repo and deploy with Docker support.
 
 ## API Reference
 
