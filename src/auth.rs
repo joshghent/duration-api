@@ -8,6 +8,7 @@ use std::sync::Arc;
 use crate::db::Db;
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct ApiKeyId(pub i64);
 
 pub async fn auth_middleware(

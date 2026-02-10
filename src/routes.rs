@@ -15,6 +15,7 @@ use crate::error::AppError;
 use crate::models::*;
 
 pub struct AppState {
+    #[allow(dead_code)]
     pub db: Arc<crate::db::Db>,
     pub http_client: reqwest::Client,
 }
