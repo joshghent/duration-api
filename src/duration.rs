@@ -4,8 +4,7 @@ use std::process::Command;
 use crate::error::AppError;
 
 const MEDIA_EXTENSIONS: &[&str] = &[
-    "mp4", "avi", "mov", "webm", "mkv",
-    "mp3", "wav", "flac", "ogg", "aac", "wma", "m4a",
+    "mp4", "avi", "mov", "webm", "mkv", "mp3", "wav", "flac", "ogg", "aac", "wma", "m4a",
 ];
 
 const WORDS_PER_MINUTE: f64 = 200.0;
@@ -28,9 +27,12 @@ pub fn is_zip_file(path: &Path) -> bool {
 pub fn get_duration_seconds(file_path: &Path) -> Result<f64, AppError> {
     let output = Command::new("ffprobe")
         .args([
-            "-v", "error",
-            "-show_entries", "format=duration",
-            "-of", "default=noprint_wrappers=1:nokey=1",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "default=noprint_wrappers=1:nokey=1",
         ])
         .arg(file_path)
         .output()
@@ -38,9 +40,7 @@ pub fn get_duration_seconds(file_path: &Path) -> Result<f64, AppError> {
 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        return Err(AppError::InternalError(format!(
-            "ffprobe failed: {stderr}"
-        )));
+        return Err(AppError::InternalError(format!("ffprobe failed: {stderr}")));
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -324,8 +324,10 @@ pub fn count_questions_in_js(js: &str) -> u64 {
     for line in js.lines() {
         let trimmed = line.trim().to_lowercase();
         // Strip leading { or , for object entries
-        let stripped = trimmed.trim_start_matches(|c: char| c == '{' || c == ',' || c.is_whitespace());
-        if (stripped.starts_with("\"question\"") || stripped.starts_with("'question'")
+        let stripped =
+            trimmed.trim_start_matches(|c: char| c == '{' || c == ',' || c.is_whitespace());
+        if (stripped.starts_with("\"question\"")
+            || stripped.starts_with("'question'")
             || stripped.starts_with("question:"))
             && stripped.contains(':')
         {
@@ -413,10 +415,7 @@ mod tests {
 
     #[test]
     fn test_count_words_in_html() {
-        assert_eq!(
-            count_words_in_html("<p>Hello world this is a test</p>"),
-            6
-        );
+        assert_eq!(count_words_in_html("<p>Hello world this is a test</p>"), 6);
         assert_eq!(
             count_words_in_html("<script>var x = 1;</script><p>Hello</p>"),
             1
@@ -426,10 +425,7 @@ mod tests {
             1
         );
         assert_eq!(count_words_in_html(""), 0);
-        assert_eq!(
-            count_words_in_html("<div><span>Two words</span></div>"),
-            2
-        );
+        assert_eq!(count_words_in_html("<div><span>Two words</span></div>"), 2);
     }
 
     #[test]
@@ -465,7 +461,8 @@ mod tests {
 
     #[test]
     fn test_analyze_scorm_with_test_file() {
-        let zip_path = Path::new("testfiles/scorm/ContentPackagingSingleSCO_SCORM20043rdEdition.zip");
+        let zip_path =
+            Path::new("testfiles/scorm/ContentPackagingSingleSCO_SCORM20043rdEdition.zip");
         if !zip_path.exists() {
             return; // skip if test files not available
         }
@@ -475,12 +472,17 @@ mod tests {
         // This package has HTML content and quiz questions but no media
         assert!(result.media_files.is_empty());
         assert!(result.word_count > 0, "Should find words in HTML files");
-        assert!(result.quiz_question_count > 0, "Should find quiz questions in JS files");
+        assert!(
+            result.quiz_question_count > 0,
+            "Should find quiz questions in JS files"
+        );
     }
 
     #[test]
     fn test_analyze_scorm_with_media() {
-        let zip_path = Path::new("testfiles/scorm/employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip");
+        let zip_path = Path::new(
+            "testfiles/scorm/employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip",
+        );
         if !zip_path.exists() {
             return;
         }

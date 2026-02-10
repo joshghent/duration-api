@@ -26,7 +26,10 @@ fn test_ffprobe_audio() {
         return;
     }
     let seconds = durationapi::duration::get_duration_seconds(path).unwrap();
-    assert!(seconds > 20.0 && seconds < 30.0, "Expected ~24s, got {seconds}");
+    assert!(
+        seconds > 20.0 && seconds < 30.0,
+        "Expected ~24s, got {seconds}"
+    );
 }
 
 /// Test that ffprobe can extract duration from the test video file
@@ -37,7 +40,10 @@ fn test_ffprobe_video() {
         return;
     }
     let seconds = durationapi::duration::get_duration_seconds(path).unwrap();
-    assert!(seconds > 5.0 && seconds < 30.0, "Expected ~12s, got {seconds}");
+    assert!(
+        seconds > 5.0 && seconds < 30.0,
+        "Expected ~12s, got {seconds}"
+    );
 }
 
 /// Test SCORM analysis on a package with quiz questions
@@ -65,7 +71,9 @@ fn test_scorm_analysis_content_estimation() {
 /// Test SCORM with embedded media (employee health course)
 #[test]
 fn test_scorm_analysis_with_media() {
-    let zip_path = Path::new("testfiles/scorm/employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip");
+    let zip_path = Path::new(
+        "testfiles/scorm/employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip",
+    );
     if !zip_path.exists() {
         return;
     }
@@ -80,18 +88,39 @@ fn test_scorm_analysis_with_media() {
 /// Test format_duration edge cases
 #[test]
 fn test_format_duration_large_values() {
-    assert_eq!(durationapi::duration::format_duration(86400.0, "HH:MM:SS"), "24:00:00");
-    assert_eq!(durationapi::duration::format_duration(90061.0, "HH:MM:SS"), "25:01:01");
-    assert_eq!(durationapi::duration::format_duration(0.4, "HH:MM:SS"), "00:00:00");
-    assert_eq!(durationapi::duration::format_duration(0.5, "HH:MM:SS"), "00:00:01"); // rounds up
+    assert_eq!(
+        durationapi::duration::format_duration(86400.0, "HH:MM:SS"),
+        "24:00:00"
+    );
+    assert_eq!(
+        durationapi::duration::format_duration(90061.0, "HH:MM:SS"),
+        "25:01:01"
+    );
+    assert_eq!(
+        durationapi::duration::format_duration(0.4, "HH:MM:SS"),
+        "00:00:00"
+    );
+    assert_eq!(
+        durationapi::duration::format_duration(0.5, "HH:MM:SS"),
+        "00:00:01"
+    ); // rounds up
 }
 
 /// Test ISO 8601 duration edge cases
 #[test]
 fn test_iso8601_edge_cases() {
     assert_eq!(durationapi::duration::parse_iso8601_duration("PT0S"), None); // zero
-    assert_eq!(durationapi::duration::parse_iso8601_duration("PT1.5H"), Some(5400.0));
-    assert_eq!(durationapi::duration::parse_iso8601_duration("P1DT2H"), Some(93600.0));
+    assert_eq!(
+        durationapi::duration::parse_iso8601_duration("PT1.5H"),
+        Some(5400.0)
+    );
+    assert_eq!(
+        durationapi::duration::parse_iso8601_duration("P1DT2H"),
+        Some(93600.0)
+    );
     assert_eq!(durationapi::duration::parse_iso8601_duration(""), None);
-    assert_eq!(durationapi::duration::parse_iso8601_duration("not a duration"), None);
+    assert_eq!(
+        durationapi::duration::parse_iso8601_duration("not a duration"),
+        None
+    );
 }

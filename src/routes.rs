@@ -108,10 +108,7 @@ pub async fn duration_multipart(
     Ok(Json(json!(result)).into_response())
 }
 
-fn build_scorm_analysis_response(
-    analysis: &ScormAnalysis,
-    format: &str,
-) -> ScormAnalysisResponse {
+fn build_scorm_analysis_response(analysis: &ScormAnalysis, format: &str) -> ScormAnalysisResponse {
     let reading_seconds = (analysis.word_count as f64 / 200.0) * 60.0;
     let quiz_seconds = analysis.quiz_question_count as f64 * 30.0;
 
@@ -126,10 +123,7 @@ fn build_scorm_analysis_response(
     }
 }
 
-fn process_single_file(
-    file_path: &Path,
-    format: &str,
-) -> Result<serde_json::Value, AppError> {
+fn process_single_file(file_path: &Path, format: &str) -> Result<serde_json::Value, AppError> {
     if is_zip_file(file_path) {
         let extract_dir = file_path.parent().unwrap().join("scorm_extract");
         std::fs::create_dir_all(&extract_dir)?;
@@ -210,10 +204,7 @@ fn process_single_file(
     if !is_supported_media(file_path) {
         return Err(AppError::UnsupportedFileType(format!(
             "Unsupported file type: {}",
-            file_path
-                .extension()
-                .unwrap_or_default()
-                .to_string_lossy()
+            file_path.extension().unwrap_or_default().to_string_lossy()
         )));
     }
 
@@ -286,7 +277,8 @@ fn process_multiple_files(
                                 None
                             },
                             warning: if est == 0.0 {
-                                let w = format!("{name}: No media or content found in SCORM package");
+                                let w =
+                                    format!("{name}: No media or content found in SCORM package");
                                 warnings.push(w.clone());
                                 Some(w)
                             } else {
@@ -341,7 +333,10 @@ fn process_multiple_files(
     }
 
     let estimated_duration = if has_scorm {
-        Some(format_duration(total_seconds + total_content_seconds, format))
+        Some(format_duration(
+            total_seconds + total_content_seconds,
+            format,
+        ))
     } else {
         None
     };
