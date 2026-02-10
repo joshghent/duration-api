@@ -1,11 +1,11 @@
 # Build stage
-FROM rust:1.77-slim AS builder
+FROM rust:1.86-slim AS builder
 
 WORKDIR /app
 COPY Cargo.toml Cargo.lock* ./
 COPY src/ src/
 
-RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y pkg-config libssl-dev cmake g++ && rm -rf /var/lib/apt/lists/*
 RUN cargo build --release
 
 # Runtime stage
