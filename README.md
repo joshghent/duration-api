@@ -10,7 +10,6 @@ A high-performance microservice built in Rust that extracts duration information
 - **Manifest parsing** — Extracts `typicalLearningTime` and SCORM 2004 duration limits from `imsmanifest.xml`
 - **Multiple file processing** — Submit batches of files and get individual + total durations
 - **File upload support** — Both URL-based and multipart upload endpoints
-- **API key authentication** — Simple key-based auth with usage tracking
 - **Configurable output format** — `HH:MM:SS`, `MM:SS`, or `HH:MM`
 
 ## Getting Started
@@ -37,108 +36,26 @@ The binary will be at `target/release/durationapi`.
 # Start on default port 3000
 ./target/release/durationapi serve
 
-# Custom port and database path
-./target/release/durationapi serve --port 8080 --db-path /var/data/api.db
+# Custom port
+./target/release/durationapi serve --port 8080
 ```
 
-### Create an API key
+## Docker
 
-All endpoints except `/health` require an API key passed via the `X-API-Key` header.
+A Docker image is published to GHCR on every merge to `main`:
 
 ```bash
-./target/release/durationapi create-key --name "my-app"
-# Output: Created API key for 'my-app': xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+docker run -d --name durationapi -p 3000:3000 ghcr.io/joshghent/duration-api:latest
 ```
 
-## Hosting with Docker
-
-The easiest way to deploy is with Docker.
-
-### Docker Compose (recommended)
+Or build it yourself:
 
 ```bash
-docker compose up -d
-```
-
-This uses the included `docker-compose.yml` which:
-- Builds the image from the Dockerfile
-- Exposes port 3000
-- Persists the SQLite database in a named volume
-- Restarts automatically unless stopped
-
-### Docker standalone
-
-```bash
-# Build the image
 docker build -t durationapi .
-
-# Run the container
-docker run -d \
-  --name durationapi \
-  -p 3000:3000 \
-  -v durationapi-data:/data \
-  durationapi
+docker run -d --name durationapi -p 3000:3000 durationapi
 ```
 
-### Create an API key in Docker
-
-```bash
-docker exec durationapi durationapi create-key --name "my-app" --db-path /data/durationapi.db
-```
-
-### Cloud deployment
-
-The Docker image works with any container hosting platform:
-
-- **AWS** — ECS, Fargate, or App Runner
-- **GCP** — Cloud Run or GKE
-- **Azure** — Container Apps or ACI
-- **DigitalOcean** — App Platform
-- **Fly.io** — `fly launch` with the Dockerfile
-
-Ensure the container has a persistent volume mounted at `/data` for the SQLite database, and that port 3000 is exposed.
-
-### Self-hosting with Cloudflare Tunnel (recommended)
-
-The simplest production setup is running Docker on your own server and exposing it via a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/). This gives you HTTPS, DDoS protection, and a custom domain without opening any ports.
-
-1. Install `cloudflared` on your server:
-   ```bash
-   # Debian/Ubuntu
-   curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
-   echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
-   sudo apt-get update && sudo apt-get install cloudflared
-   ```
-
-2. Authenticate and create a tunnel:
-   ```bash
-   cloudflared tunnel login
-   cloudflared tunnel create duration-api
-   ```
-
-3. Start the API with Docker Compose:
-   ```bash
-   docker compose up -d
-   ```
-
-4. Route traffic through the tunnel:
-   ```bash
-   cloudflared tunnel route dns duration-api api.yourdomain.com
-   cloudflared tunnel --url http://localhost:3000 run duration-api
-   ```
-
-5. (Optional) Run `cloudflared` as a systemd service for auto-restart:
-   ```bash
-   sudo cloudflared service install
-   ```
-
-That's it — your API is live at `https://api.yourdomain.com` with no ports exposed, automatic HTTPS, and Cloudflare's network in front.
-
-### Other hosting options
-
-- **Google Cloud Run** — Container-based, scales to zero, good free tier. Works well since the Docker image includes ffmpeg.
-- **Fly.io** — Docker-native with persistent volumes for SQLite. Run `fly launch` in the project root.
-- **Railway / Render** — Connect your repo and deploy with Docker support.
+It's a standard Docker image — run it however you like.
 
 ## API Reference
 
@@ -148,8 +65,6 @@ That's it — your API is live at `https://api.yourdomain.com` with no ports exp
 GET /health
 ```
 
-No authentication required.
-
 ```json
 { "status": "ok" }
 ```
@@ -158,7 +73,6 @@ No authentication required.
 
 ```
 POST /duration
-X-API-Key: your-api-key
 Content-Type: application/json
 ```
 
@@ -232,7 +146,6 @@ Response:
 
 ```
 POST /duration/upload
-X-API-Key: your-api-key
 Content-Type: multipart/form-data
 ```
 
@@ -255,7 +168,6 @@ Response format is the same as the JSON endpoint.
 | Status | Meaning                        |
 |--------|--------------------------------|
 | 400    | Bad request / unsupported file |
-| 401    | Missing or invalid API key     |
 | 500    | Internal server error          |
 
 Errors return JSON:
@@ -311,8 +223,6 @@ src/
 ├── lib.rs        # Module exports
 ├── routes.rs     # HTTP endpoint handlers
 ├── duration.rs   # Core duration extraction and SCORM analysis
-├── auth.rs       # API key middleware
-├── db.rs         # SQLite database operations
 ├── models.rs     # Request/response types
 └── error.rs      # Error types and HTTP conversions
 testfiles/        # Test media and SCORM packages

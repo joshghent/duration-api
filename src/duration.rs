@@ -363,10 +363,12 @@ pub fn format_duration(total_seconds: f64, format: &str) -> String {
     let seconds = total_secs % 60;
 
     match format {
-        "MM:SS" => format!("{:02}:{:02}", (hours * 60) + minutes, seconds),
-        "HH:MM" => format!("{:02}:{:02}", hours, minutes),
-        // Default: HH:MM:SS
-        _ => format!("{:02}:{:02}:{:02}", hours, minutes, seconds),
+        "MM:SS" => {
+            let total_minutes = (hours * 60) + minutes;
+            format!("{total_minutes:02}:{seconds:02}")
+        }
+        "HH:MM" => format!("{hours:02}:{minutes:02}"),
+        _ => format!("{hours:02}:{minutes:02}:{seconds:02}"),
     }
 }
 

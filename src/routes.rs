@@ -15,8 +15,6 @@ use crate::error::AppError;
 use crate::models::*;
 
 pub struct AppState {
-    #[allow(dead_code)]
-    pub db: Arc<crate::db::Db>,
     pub http_client: reqwest::Client,
 }
 
@@ -57,11 +55,7 @@ pub async fn duration_json(
     ))
 }
 
-pub async fn duration_multipart(
-    State(state): State<Arc<AppState>>,
-    mut multipart: Multipart,
-) -> Result<impl IntoResponse, AppError> {
-    let _ = &state;
+pub async fn duration_multipart(mut multipart: Multipart) -> Result<impl IntoResponse, AppError> {
     let tmp_dir = TempDir::new()?;
     let mut format = "HH:MM:SS".to_string();
     let mut file_paths: Vec<(String, PathBuf)> = Vec::new();

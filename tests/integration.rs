@@ -1,39 +1,5 @@
 use std::path::Path;
 
-/// Test that the DB can be created, keys generated, and validated
-#[test]
-fn test_db_lifecycle() {
-    let tmp = tempfile::NamedTempFile::new().unwrap();
-    let db = durationapi::db::Db::new(tmp.path().to_str().unwrap()).unwrap();
-
-    let key = db.create_api_key("test-app").unwrap();
-    assert!(!key.is_empty());
-
-    let key_id = db.validate_key(&key).unwrap();
-    assert!(key_id.is_some());
-
-    let invalid = db.validate_key("not-a-real-key").unwrap();
-    assert!(invalid.is_none());
-
-    db.record_usage(key_id.unwrap()).unwrap();
-}
-
-/// Test that multiple API keys are independent
-#[test]
-fn test_db_multiple_keys() {
-    let tmp = tempfile::NamedTempFile::new().unwrap();
-    let db = durationapi::db::Db::new(tmp.path().to_str().unwrap()).unwrap();
-
-    let key1 = db.create_api_key("app-one").unwrap();
-    let key2 = db.create_api_key("app-two").unwrap();
-
-    assert_ne!(key1, key2, "Each key should be unique");
-
-    let id1 = db.validate_key(&key1).unwrap().unwrap();
-    let id2 = db.validate_key(&key2).unwrap().unwrap();
-    assert_ne!(id1, id2, "Each key should have a distinct ID");
-}
-
 /// Test that ffprobe can extract duration from the test audio file
 #[test]
 fn test_ffprobe_audio() {
@@ -88,7 +54,9 @@ fn test_supported_media_extensions() {
 /// Test unsupported file types are rejected
 #[test]
 fn test_unsupported_media_extensions() {
-    let unsupported = ["png", "jpg", "gif", "txt", "pdf", "docx", "html", "zip", "exe"];
+    let unsupported = [
+        "png", "jpg", "gif", "txt", "pdf", "docx", "html", "zip", "exe",
+    ];
     for ext in &unsupported {
         let p = Path::new("test").with_extension(ext);
         assert!(
@@ -231,8 +199,7 @@ fn test_scorm_2004_3rd_runtime_advanced() {
 
 #[test]
 fn test_scorm_2004_3rd_sequencing_forced_sequential() {
-    let analysis =
-        assert_scorm_parses("SequencingForcedSequential_SCORM20043rdEdition.zip");
+    let analysis = assert_scorm_parses("SequencingForcedSequential_SCORM20043rdEdition.zip");
     assert!(analysis.word_count > 0);
 }
 
@@ -244,8 +211,7 @@ fn test_scorm_2004_3rd_sequencing_post_test_rollup() {
 
 #[test]
 fn test_scorm_2004_3rd_sequencing_pre_or_post_test() {
-    let analysis =
-        assert_scorm_parses("SequencingPreOrPostTestRollup_SCORM20043rdEdition.zip");
+    let analysis = assert_scorm_parses("SequencingPreOrPostTestRollup_SCORM20043rdEdition.zip");
     assert!(analysis.word_count > 0);
 }
 
@@ -257,8 +223,7 @@ fn test_scorm_2004_3rd_sequencing_random_test() {
 
 #[test]
 fn test_scorm_2004_3rd_sequencing_simple_remediation() {
-    let analysis =
-        assert_scorm_parses("SequencingSimpleRemediation_SCORM20043rdEdition.zip");
+    let analysis = assert_scorm_parses("SequencingSimpleRemediation_SCORM20043rdEdition.zip");
     assert!(analysis.word_count > 0);
 }
 
@@ -266,8 +231,7 @@ fn test_scorm_2004_3rd_sequencing_simple_remediation() {
 
 #[test]
 fn test_scorm_2004_4th_sequencing_post_test_rollup() {
-    let analysis =
-        assert_scorm_parses("SequencingPostTestRollup4thEd_SCORM20044thEdition.zip");
+    let analysis = assert_scorm_parses("SequencingPostTestRollup4thEd_SCORM20044thEdition.zip");
     assert!(analysis.word_count > 0);
 }
 
@@ -591,10 +555,7 @@ fn test_count_words_nested_html() {
     </html>
     "#;
     let count = durationapi::duration::count_words_in_html(html);
-    assert!(
-        count > 15 && count < 40,
-        "Expected ~25 words, got {count}"
-    );
+    assert!(count > 15 && count < 40, "Expected ~25 words, got {count}");
 }
 
 #[test]
@@ -623,7 +584,10 @@ fn test_count_questions_addquestion_pattern() {
     "#;
     let count = durationapi::duration::count_questions_in_js(js);
     // 3x AddQuestion + 3x new Question = 6
-    assert_eq!(count, 6, "Should detect AddQuestion + new Question patterns");
+    assert_eq!(
+        count, 6,
+        "Should detect AddQuestion + new Question patterns"
+    );
 }
 
 #[test]

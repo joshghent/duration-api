@@ -17,8 +17,7 @@ RUN apt-get update && \
 
 COPY --from=builder /app/target/release/durationapi /usr/local/bin/durationapi
 
-WORKDIR /data
 EXPOSE 3000
 
 ENTRYPOINT ["durationapi"]
-CMD ["serve", "--port", "3000", "--db-path", "/data/durationapi.db"]
+CMD ["serve", "--port", "3000"]
