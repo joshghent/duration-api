@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<manifest identifier="wrJtk4VKTecs1jFEEtA9gLGKLcXk6vAL0B2a3WZM" version="1"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                      http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                      http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <adlcp:location>metadata.xml</adlcp:location>
+  </metadata>
+  <organizations default="articulate_rise">
+      <organization identifier="articulate_rise">
+      <title>Employee Health and Wellness (Sample Course)</title>
+      <item identifier="i1" identifierref="r1" isvisible="true">
+        <title>Employee Health and Wellness (Sample Course)</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="r1" type="webcontent" adlcp:scormtype="sco" href="scormdriver/indexAPI.html">
+      <!-- SCORMDRIVER STUFF -->
+      <file href="scormdriver/indexAPI.html" />
+      <file href="scormdriver/AICCComm.html" />
+      <file href="scormdriver/auto-scripts/AutoBookmark.js" />
+      <file href="scormdriver/auto-scripts/AutoCompleteSCO.js" />
+      <file href="scormdriver/auto-scripts/CourseExit.js" />
+      <file href="scormdriver/blank.html" />
+      <file href="scormdriver/goodbye.html" />
+      <file href="scormdriver/scormdriver.js" />
+      <file href="scormdriver/browsersniff.js" />
+
+      <!-- RUNTIME COMMON STUFF -->
+      <file href="scormcontent/index.html" />
+      <file href="scormcontent/lib/main.bundle.js"/>
+
+      
+        <file href="scormcontent/lib/fonts/icomoon.ttf"/>
+        <file href="scormcontent/lib/fonts/icomoon.woff"/>
+
+        <file href="scormcontent/lib/icomoon.css"/>
+        <file href="scormcontent/lib/main.bundle.css"/>
+        <file href="scormcontent/lib/player-0.0.11.min.js"/>
+        <file href="scormcontent/lib/lzwcompress.js"/>
+      
+
+      <!-- RUNTIME CONTENT STUFF -->
+      <file href="scormcontent/lib/fonts/Lato-Light.woff" />
+<file href="scormcontent/lib/fonts/Lato-Regular.woff" />
+<file href="scormcontent/lib/fonts/Lato-Bold.woff" />
+<file href="scormcontent/lib/fonts/Lato-Italic.woff" />
+<file href="scormcontent/lib/fonts/Lato-Black.woff" />
+<file href="scormcontent/lib/fonts/Merriweather-Light.woff" />
+<file href="scormcontent/lib/fonts/Merriweather-Regular.woff" />
+<file href="scormcontent/lib/fonts/Merriweather-Bold.woff" />
+<file href="scormcontent/lib/fonts/Merriweather-Italic.woff" />
+<file href="scormcontent/lib/fonts/Merriweather-Black.woff" />
+<file href="scormcontent/assets/m8h9Iv-3GuUtqoK8_small_1436364585.jpg" />
+<file href="scormcontent/assets/-vMRGnNNDCR4ZsXf_running-streets.jpg" />
+<file href="scormcontent/assets/ke8CwZpUSLIVi1MY_friends.mp3" />
+<file href="scormcontent/assets/fZQel53EN01AFxw3_sunset.jpg" />
+<file href="scormcontent/assets/MQZMOGk-fNLJKjkl_breakfast.jpg" />
+<file href="scormcontent/assets/18AaubRC2NIREd_1_avocado.jpg" />
+<file href="scormcontent/assets/0j_2hSEvSCQnsGBN_kayak.jpg" />
+<file href="scormcontent/assets/d0aWl9MYqgQeHCJr_mountain.jpg" />
+<file href="scormcontent/assets/-VT9Iuq5PgEk4sni_traffic.jpg" />
+<file href="scormcontent/assets/s8oxzBmSvl0odj2J_plate.jpg" />
+
+    </resource>
+  </resources>
+</manifest>
