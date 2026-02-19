@@ -1,19 +1,47 @@
 {
   "name": "duration-api",
   "version": "1.0.0",
-  "description": "Extract duration from media files and SCORM packages",
+  "description": "Extract duration from media files and SCORM packages via ffprobe. Supports video, audio, and SCORM 1.1/1.2/2004/cmi5 e-learning packages.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshghent/duration-api.git"
+  },
+  "keywords": [
+    "duration",
+    "ffprobe",
+    "ffmpeg",
+    "media",
+    "video",
+    "audio",
+    "scorm",
+    "cmi5",
+    "e-learning",
+    "lms"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "bin": {
     "durationapi": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/cli.js serve",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "engines": {
     "node": ">=18.0.0"
