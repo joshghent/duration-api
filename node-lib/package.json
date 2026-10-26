@@ -62,7 +62,7 @@
     "vitest": "~4.1.11"
   },
   "overrides": {
-    "@vitest/mocker": "~4.1.11",
+    "@vitest/mocker": "~4.1.12",
     "qs": "~6.16.0",
     "nanoid": "~5.1.11",
     "postcss": "~8.5.23",
