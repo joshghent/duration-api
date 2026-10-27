@@ -50,7 +50,7 @@
     "adm-zip": "~0.6.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "multer": "~2.4.0"
+    "multer": "~2.5.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
@@ -62,7 +62,7 @@
     "vitest": "~4.1.11"
   },
   "overrides": {
-    "@vitest/mocker": "~4.1.11",
+    "@vitest/mocker": "~5.0.3",
     "qs": "~6.16.0",
     "nanoid": "~5.1.11",
     "postcss": "~8.5.23",
